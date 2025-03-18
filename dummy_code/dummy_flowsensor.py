@@ -3,6 +3,6 @@ class Flowsensor:
         self.digital_pin = digital_pin
         # pin initialization as digital input here
         
-    def get_value():
+    def get_value(self):
         # read out digital value here
         return True
