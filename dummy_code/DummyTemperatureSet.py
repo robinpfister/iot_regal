@@ -1,5 +1,13 @@
 class DummyTemperatureSet:
-    def __init__(self, pin):
+    def __init__(self, pin, addresses):
+        """
+        @pin: one wire pin
+        @addresses: dict = {
+         "Left": adr
+         "Middle": adr
+         "Right": adr
+        }
+        """
         self.pin = pin
         # add one wire initialization here
         
