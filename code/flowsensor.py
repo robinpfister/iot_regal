@@ -1,6 +1,6 @@
 from machine import Pin
 
-class FlowSensor():
+class Flowsensor():
     
     def __init__(self, pin):
         self.pin = Pin(pin, mode=Pin.IN)
