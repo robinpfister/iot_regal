@@ -3,9 +3,13 @@ import ntptime
 import machine
 import utime
 from umqtt.simple import MQTTClient
-import DummyFlowsensor
-import DummyTemperatureBME
 
+import DummyBME
+import DummyFan
+import DummyFlowsensor
+import DummyIllumination
+import DummyLuminosity
+import DummyTemperatureSet
 
 
 def do_connect():
@@ -18,7 +22,7 @@ def do_connect():
             pass
     print('network config:', wlan.ipconfig('addr4'))
     
-def set_rtc():
+def init_rtc():
     # Set the time using NTP
     try:
         ntptime.settime()
@@ -33,7 +37,8 @@ def set_rtc():
     #   print('Current time:', current_time)
     #   utime.sleep(60)  # Update every 60 seconds
 
-def test_mqtt():
+def init_mqtt_client(mqtt_config):
+    """create to client and connect"""
     # MQTT settings
     mqtt_server = '192.168.137.1'
     client_id = 'dummy_regal'
@@ -98,6 +103,6 @@ def mqtt_ping_pong():
 
 
 do_connect()
-set_rtc()
+init_rtc()
 #test_mqtt()
 mqtt_ping_pong()

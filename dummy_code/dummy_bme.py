@@ -1,4 +1,4 @@
-class DummyBME():
+class BME():
     def __init__(self, i2c, address):
         self.i2c = i2c # i2c instantiation is done by parrent
         self.address = address

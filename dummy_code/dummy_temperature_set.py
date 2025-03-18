@@ -1,4 +1,4 @@
-class DummyTemperatureSet:
+class TemperatureSet:
     def __init__(self, pin, addresses):
         """
         @pin: one wire pin

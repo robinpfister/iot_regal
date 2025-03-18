@@ -1,4 +1,4 @@
-class DummyIllumination():
+class Illumination():
     def __init__(self, light_pin):
         self.light_pin = light_pin
         # initialize PWM here

@@ -1,4 +1,4 @@
-class DummyFan():
+class Fan():
     def __init__(self, pwm_pin):
         self.pwm_pin = pwm_pin
         # initialize PWM here
