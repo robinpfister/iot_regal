@@ -11,8 +11,8 @@ class Fan():
         """@duty_cylce: 1byte value"""
         self.pwm.duty(duty_cycle*4)
         
-fan = Fan(4)
-fan.set_value(128)
-
-while True:
-    pass
+# fan = Fan(4)
+# fan.set_value(128)
+# 
+# while True:
+#     pass
