@@ -25,9 +25,15 @@ def set_rtc():
 
     # Print the current time
     #while True:
-    #    current_time = utime.localtime()
-    #   print('Current time:', current_time)
-    #   utime.sleep(60)  # Update every 60 seconds
+        #current_time = utime.localtime()
+        #print('Current time:', current_time)
+        #utime.sleep(60)  # Update every 60 seconds
+    
+    # Output
+    # Time set to: (2025, 3, 18, 1, 9, 53, 24, 101)
+    # Current time: (2025, 3, 18, 9, 53, 24, 1, 77)
+    # Current time: (2025, 3, 18, 9, 54, 24, 1, 77)
+    # Problem
 
 def test_mqtt():
     # MQTT settings
@@ -96,4 +102,4 @@ def mqtt_ping_pong():
 do_connect()
 set_rtc()
 #test_mqtt()
-mqtt_ping_pong()
+#mqtt_ping_pong()
