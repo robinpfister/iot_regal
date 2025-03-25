@@ -12,6 +12,7 @@ from flowsensor import Flowsensor
 from illumination import Illumination
 from luminosity import Luminosity
 from water_temperature import WaterTemperature
+from water_temperature import addresses as temp_addresses
 from bme_temp import BMETemp
 from bme_humidity import BMEHumidity
 from bme_voc_vsc import BMEVocVsc
@@ -150,16 +151,9 @@ i2c_0 = machine.I2C(0, scl=machine.Pin(4), sda=machine.Pin(5)) #2xLicht (0x39, 0
 i2c_1 = machine.I2C(1, scl=machine.Pin(6), sda=machine.Pin(7)) #2xLicht (0x39, 0x29)
 
 #TODO check one wire configuration and pins
-one_wire_box = OneWire(machine.Pin(1))
+one_wire_box = OneWire(machine.Pin(1)) #4 Sensors -- red, yellow, orange, black
 one_wire_pipe = OneWire(machine.Pin(2))
 
-addresses_pipes = {"Back" : bytearray(b'(\xffd\x1f[\xcd\xa3.'), #Red
-                "Middle" : bytearray(b'(\xffd\x1f[\xa0\x1aS'), #Orange
-                "Front" : bytearray(b"(\xd37\x1c\x91!\x06'")}  #Yellow
-
-addresses_box = {"Left" : bytearray(b'(F\x19V\xb5\x01<\xd7'),  #Blue
-                "Middle" : bytearray(b'(G&V\xb5\x01<\x0b'),   #White
-                "Right" : bytearray(b'(\xffUV\xb5\x01<\x8e')} #Green
 
 #map mqtt topic to sensor
 bme_left_top = BME(i2c_1, 0x77)
@@ -167,9 +161,9 @@ bme_right_top = BME(i2c_1, 0x76)
 bme_left_bottom = BME(i2c_0, 0x77)
 bme_right_bottom = BME(i2c_0, 0x76)
 sensor_list = {
-    "Rack/Water/Temperature/Box/Left": WaterTemperature(one_wire_box, addresses_box["Left"]),
-    "Rack/Water/Temperature/Box/Middle": WaterTemperature(one_wire_box, addresses_box["Middle"]), 
-    "Rack/Water/Temperature/Box/Right": WaterTemperature(one_wire_box, addresses_box["Right"]), 
+    "Rack/Water/Temperature/Box/Left": WaterTemperature(one_wire_box, temp_addresses["Red"]),
+    "Rack/Water/Temperature/Box/Middle": WaterTemperature(one_wire_box, temp_addresses["Orange"]), 
+    "Rack/Water/Temperature/Box/Right": WaterTemperature(one_wire_box, temp_addresses["Yellow"]), 
     "Rack/Air/Temperature/Top/Left": BMETemp(bme_left_top),
     "Rack/Air/Temperature/Top/Right": BMETemp(bme_right_top),
     "Rack/Air/Humidity/Top/Left": BMEHumidity(bme_left_top),
@@ -180,15 +174,15 @@ sensor_list = {
     "Rack/Brightness/Bottom/Right": Luminosity(i2c_1, 0x29),
     "Rack/Air/VOC/Top/Left": BMEVocVsc(bme_left_top),
     "Rack/Air/VOC/Top/Right": BMEVocVsc(bme_right_top),
-    "Rack/Water/Temperature/Pipe/Back": WaterTemperature(one_wire_pipe, addresses_pipes["Back"]),
-    "Rack/Water/Temperature/Pipe/Middle": WaterTemperature(one_wire_pipe, addresses_pipes["Middle"]),
-    "Rack/Water/Temperature/Pipe/Front": WaterTemperature(one_wire_pipe, addresses_pipes["Front"]),
+    "Rack/Water/Temperature/Pipe/Back": WaterTemperature(one_wire_pipe, temp_addresses["Green"]),
+    "Rack/Water/Temperature/Pipe/Middle": WaterTemperature(one_wire_pipe, temp_addresses["Blue"]),
+    "Rack/Water/Temperature/Pipe/Front": WaterTemperature(one_wire_pipe, temp_addresses["White"]),
     "Rack/Water/FlowRate/Pipe/Back": Flowsensor(40),
     "Rack/Water/FlowRate/Pipe/Middle": Flowsensor(41),
     "Rack/Water/FlowRate/Pipe/Front": Flowsensor(42),    
-    # "Rack/Water/Temperature/PlantBox/Left": WaterTemperature(one_wire_box, addresses_box["Back"]),
-    # "Rack/Water/Temperature/PlantBox/Middle": WaterTemperature(one_wire_box, addresses_box["Middle"]),
-    # "Rack/Water/Temperature/PlantBox/Right": WaterTemperature(one_wire_box, addresses_box["Front"]),
+    "Rack/Water/Temperature/PlantBox/Left": WaterTemperature(one_wire_box, temp_addresses["Black"]),
+    # "Rack/Water/Temperature/PlantBox/Middle": WaterTemperature(one_wire_box, temp_addresses["Middle"]),
+    # "Rack/Water/Temperature/PlantBox/Right": WaterTemperature(one_wire_box, temp_addresses["Front"]),
     "Rack/Air/VOC/Bottom/Left": BMEVocVsc(bme_left_bottom),
     "Rack/Air/VOC/Bottom/Right": BMEVocVsc(bme_right_bottom),
     "Rack/Air/Temperature/Bottom/Left": BMETemp(bme_left_bottom),
@@ -197,7 +191,7 @@ sensor_list = {
     "Air/Humidity/Bottom/Right": BMEHumidity(bme_left_bottom)
 }
 
-    # New Topics because of middle
+    # New Topics because of middle boxes
     # "Rack/Brightness/Bottom/Left": Luminosity(i2c_0, 0x39),
     # "Rack/Brightness/Bottom/Right": Luminosity(i2c_0, 0x29),
     # "Rack/Water/Temperature/PlantBox/Left": WaterTemperature(one_wire_pipe, addresses_box["Back"]),
@@ -215,8 +209,8 @@ sensor_list = {
     # Rack/IlluminationControl
 
 actor_list = {
-    b'Rack/VentilationControl': Fan("<insert pin here>"),
-    b'Rack/IlluminationControl': Illumination("<insert pin here>")
+    b'Rack/VentilationControl': Fan(10),
+    b'Rack/IlluminationControl': Illumination(11)
 }
 
 regal = Regal(wlan_config=wlan_config, mqtt_config=mqtt_config, sensor_list=sensor_list, actor_list=actor_list)
