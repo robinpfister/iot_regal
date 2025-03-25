@@ -27,9 +27,9 @@ class Regal:
         self.actor_list = actor_list
         self.wlan_config = wlan_config
         self.do_connect()
-        self.init_rtc_10()
         self.mqtt_config = mqtt_config
         self.init_mqtt_client()
+        self.time_set = False
         
     def do_connect(self):
         wlan = network.WLAN(network.WLAN.IF_STA)
@@ -42,39 +42,32 @@ class Regal:
         print('network config:', wlan.ipconfig('addr4'))
         self.wlan = wlan
         utime.sleep(5)
-    
-    def init_rtc_10(self):
-        """
-        Initialize RTC: After init, time can be received with current_time = utime.localtime().
-        Retries up to 10 times in case of failure.
-        """
-        max_retries = 10
-        rtc = machine.RTC()
-        
-        for attempt in range(1, max_retries + 1):
-            try:
-                ntptime.settime()
-                print('Time successfully set to:', rtc.datetime())
-                return  # Exit the function if time is set successfully
-            except OSError as e:
-                print(f'Attempt {attempt} failed to set time: {e}')
-                if attempt < max_retries:
-                    print('Retrying in 5 seconds...')
-                    utime.sleep(5)  # Wait before retrying
-        
-        print('Failed to set time after 10 attempts.')
-    
-    def init_rtc(self):
-        """
-        initialize rtc: after init time can be received with current_time = utime.localtime()
-        """
-        # Set the time using NTP
+
+    def set_rtc_from_string_and_ntp(self, date_time_str):
+        """@date_time_string: YYYY-MM-DD-HH:MM:SS eg "2025-03-25-10:00:00 """
+        # Parse the string "YYYY-MM-DD-HH:MM:SS"
+        year, month, day, rest = date_time_str.split('-')
+        hour, minute, second = rest.split(':')
+        print("Before NTP:")
+        print(f"year: {year}, day: {day}, month: {month}, hour: {hour}, minute: {minute}, second: {second}")
+
+        # Get time from NTP server
         try:
-            ntptime.settime()
-            rtc = machine.RTC()
-            print('Time set to:', rtc.datetime())
-        except OSError as e:
-            print('Failed to set time:', e)
+            ntptime.settime()  # Sync system time with NTP
+            current_time = rtc.datetime()
+            minute = current_time[4]
+            second = current_time[5]
+            # Assuming milliseconds are unavailable in ntptime, set to 0
+        except Exception as e:
+            print(f"Exception: {e}")
+            print("NTP server unavailable, using default values.")
+
+        # Set the RTC with parsed and NTP time
+        rtc = machine.RTC()
+        print(f"year: {year}, day: {day}, month: {month}, hour: {hour}, minute: {minute}, second: {second}")
+        #(year,month,day,day of the week(0-6;Mon-Sun),hour(24 hour format),minute,second,microsecond)
+        rtc.datetime((int(year), int(month), int(day), 0, int(hour), int(minute), int(second), 0))
+        print("RTC updated successfully:", rtc.datetime())
 
     def init_mqtt_client(self):
         """create to client and connect"""
@@ -84,8 +77,9 @@ class Regal:
         self.mqtt_client.set_callback(self.on_message)
         self.mqtt_client.connect()
         print(f'Connected to {mqtt_config["server"]} MQTT broker')
-        
+        self.mqtt_client.subscribe("Time")
         self.subscribe_actors()
+        
         # Publish a message
         # message = b'Hello from MicroPython'
         # client.publish(topic, message)
@@ -115,7 +109,11 @@ class Regal:
 
     def on_message(self, topic, msg):
         print('Message received on %s: %s' % (topic, msg))
-        self.actor_list[topic].set_value(msg)
+        if(topic == b'Time'):
+            self.set_rtc_from_string_and_ntp(bytes.decode(msg, 'utf-8'))
+            self.time_set = True
+        else:
+            self.actor_list[topic].set_value(msg)
 
     def run(self):
         # Wait for messages
@@ -124,8 +122,11 @@ class Regal:
                 print("awaiting messages")
                 print(type(self.mqtt_client))
                 self.mqtt_client.check_msg()
-                utime.sleep(30)
-                self.publish_sensors()
+                utime.sleep(10)
+                if(self.time_set):
+                    self.publish_sensors()
+                else:
+                    print("Not publishing because time has not been set yet, time needs to be passed as YYYY-MM-DD-HH:MM:SS on Time topic")
         finally:
             # Disconnect
             self.mqtt_client.disconnect()
