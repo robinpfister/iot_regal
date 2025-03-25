@@ -210,8 +210,8 @@ sensor_list = {
     # Rack/IlluminationControl
 
 actor_list = {
-    b'Rack/VentilationControl': Fan(10),
-    b'Rack/IlluminationControl': Illumination(11)
+    b'Rack/VentilationControl': Fan(20),
+    b'Rack/IlluminationControl': Illumination(21)
 }
 
 regal = Regal(wlan_config=wlan_config, mqtt_config=mqtt_config, sensor_list=sensor_list, actor_list=actor_list)
