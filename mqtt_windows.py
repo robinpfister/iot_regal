@@ -32,13 +32,14 @@ client.connect(mqtt_server, mqtt_port, 60)
 client.loop_start()
 
 # Subscribe to the topic
-client.subscribe(sub_topic)
-print('Subscribed to topic:', sub_topic)
+# client.subscribe(sub_topic)
+# print('Subscribed to topic:', sub_topic)
 
 # Wait for messages
 try:
     while True:
-        time.sleep(5)
+        time.sleep(10)
+        client.publish("Time","2025-03-25-10:00:00")
 finally:
     # Stop the client loop and disconnect
     client.loop_stop()
