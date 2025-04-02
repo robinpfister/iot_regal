@@ -134,16 +134,16 @@ class Regal:
         
 
 wlan_config = {
-    "ssid": "X13OOLC", 
-    "psswd": "9)8p592S"
+    "ssid": "DHBWIoT24GHz", 
+    "psswd": "DHBWIoT24GHz"
     }
 
 
 mqtt_config = {
-    "server": "192.168.137.1", 
+    "server": "172.30.80.143", 
     "client_id": "dummy_regal",
-    "user": "regal",
-    "psswd": "iot_hydro"
+    "user": "HydroponicsMQTT",
+    "psswd": "TeamHydroponics#2025"
     }
 
 
