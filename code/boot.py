@@ -92,20 +92,23 @@ class Regal:
     def publish_sensors(self):
         for topic, sensor in sensor_list.items():
             print(f"publishing {topic} for sensor {type(sensor)}")
-            value = sensor.get_value()
-            time_tuple = utime.localtime()
-            # Format the time as "YYYY-MM-DD-HH:MM:SS"
-            formatted_time = "{}-{:02d}-{:02d}-{:02d}:{:02d}:{:02d}".format(
-                time_tuple[0], time_tuple[1], time_tuple[2],
-                time_tuple[3], time_tuple[4], time_tuple[5]
-            )
-            payload = {
-                "timestamp": formatted_time,
-                "data": value
-            }
-            payload_json = ujson.dumps(payload)
-            self.mqtt_client.publish(topic, payload_json)
-            print(f"message published: \n{payload_json}")
+            try:
+                value = sensor.get_value()
+                time_tuple = utime.localtime()
+                # Format the time as "YYYY-MM-DD-HH:MM:SS"
+                formatted_time = "{}-{:02d}-{:02d}-{:02d}:{:02d}:{:02d}".format(
+                    time_tuple[0], time_tuple[1], time_tuple[2],
+                    time_tuple[3], time_tuple[4], time_tuple[5]
+                )
+                payload = {
+                    "timestamp": formatted_time,
+                    "data": value
+                }
+                payload_json = ujson.dumps(payload)
+                self.mqtt_client.publish(topic, payload_json)
+                print(f"message published: \n{payload_json}")
+            except:
+                print(f"failed to get value for {topic}")
 
     def on_message(self, topic, msg):
         print('Message received on %s: %s' % (topic, msg))
