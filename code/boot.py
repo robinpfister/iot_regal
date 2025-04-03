@@ -150,6 +150,20 @@ mqtt_config = {
     }
 
 
+# for debugging with local mqtt server
+# wlan_config = {
+#     "ssid": "X13OOLC", 
+#     "psswd": "9)8p592S"
+#     }
+
+
+# mqtt_config = {
+#     "server": "192.168.137.1", 
+#     "client_id": "dummy_regal",
+#     "user": "regal",
+#     "psswd": "iot_hydro"
+#     }
+
 #TODO check i2c configuration pins
 i2c_0 = machine.I2C(0, scl=machine.Pin(4), sda=machine.Pin(5)) #2xLicht (0x39, 0x29)
 i2c_1 = machine.I2C(1, scl=machine.Pin(6), sda=machine.Pin(7)) #2xLicht (0x39, 0x29)
@@ -166,7 +180,7 @@ bme_left_bottom = BME(i2c_1, 0x77)
 bme_right_bottom = BME(i2c_1, 0x76)
 sensor_list = {
     "Rack/Water/Temperature/Box/Left": WaterTemperature(one_wire_box, temp_addresses["Red"]),
-    "Rack/Water/Temperature/Box/Middle": WaterTemperature(one_wire_box, temp_addresses["Orange"]), 
+    "Rack/Water/Temperature/Box/Middle": WaterTemperature(one_wire_box, temp_addresses["Black"]), 
     "Rack/Water/Temperature/Box/Right": WaterTemperature(one_wire_box, temp_addresses["Yellow"]), 
     "Rack/Air/Temperature/Top/Left": BMETemp(bme_left_top),
     "Rack/Air/Temperature/Top/Right": BMETemp(bme_right_top),
@@ -181,10 +195,10 @@ sensor_list = {
     "Rack/Water/Temperature/Pipe/Back": WaterTemperature(one_wire_pipe, temp_addresses["Green"]),
     "Rack/Water/Temperature/Pipe/Middle": WaterTemperature(one_wire_pipe, temp_addresses["Blue"]),
     "Rack/Water/Temperature/Pipe/Front": WaterTemperature(one_wire_pipe, temp_addresses["White"]),
-    "Rack/Water/FlowRate/Pipe/Back": Flowsensor(40),
+    "Rack/Water/FlowRate/Pipe/Back": Flowsensor(42),
     "Rack/Water/FlowRate/Pipe/Middle": Flowsensor(41),
-    "Rack/Water/FlowRate/Pipe/Front": Flowsensor(42),    
-    "Rack/Water/Temperature/PlantBox/Left": WaterTemperature(one_wire_box, temp_addresses["Black"]),
+    "Rack/Water/FlowRate/Pipe/Front": Flowsensor(40),    
+    "Rack/Water/Temperature/PlantBox/Left": WaterTemperature(one_wire_box, temp_addresses["Orange"]),
     # "Rack/Water/Temperature/PlantBox/Middle": WaterTemperature(one_wire_box, temp_addresses["Middle"]),
     # "Rack/Water/Temperature/PlantBox/Right": WaterTemperature(one_wire_box, temp_addresses["Front"]),
     "Rack/Air/VOC/Bottom/Left": BMEVocVsc(bme_left_bottom),
