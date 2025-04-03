@@ -160,10 +160,10 @@ one_wire_pipe = OneWire(machine.Pin(2))
 
 
 #map mqtt topic to sensor
-bme_left_top = BME(i2c_1, 0x77)
-bme_right_top = BME(i2c_1, 0x76)
-bme_left_bottom = BME(i2c_0, 0x77)
-bme_right_bottom = BME(i2c_0, 0x76)
+bme_left_top = BME(i2c_0, 0x77)
+bme_right_top = BME(i2c_0, 0x76)
+bme_left_bottom = BME(i2c_1, 0x77)
+bme_right_bottom = BME(i2c_1, 0x76)
 sensor_list = {
     "Rack/Water/Temperature/Box/Left": WaterTemperature(one_wire_box, temp_addresses["Red"]),
     "Rack/Water/Temperature/Box/Middle": WaterTemperature(one_wire_box, temp_addresses["Orange"]), 
