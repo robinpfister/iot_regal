@@ -17,7 +17,7 @@ def on_message(client, userdata, message):
         print('Pong sent')
 
 # Create MQTT client
-client = mqtt.Client()
+client = mqtt.Client(client_id="windows_time")
 
 # Set username and password
 client.username_pw_set(username, password)
@@ -38,7 +38,8 @@ client.loop_start()
 # Wait for messages
 try:
     while True:
-        time.sleep(10)
+        time.sleep(3)
+        print("Sending...")
         client.publish("Time","2025-03-25-10:00:00")
 finally:
     # Stop the client loop and disconnect

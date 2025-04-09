@@ -26,7 +26,7 @@ class Regal:
         self.actor_list = actor_list
         self.wlan_config = wlan_config
         self.do_connect()
-        self.init_rtc_10()
+        self.init_rtc()
         self.mqtt_config = mqtt_config
         self.init_mqtt_client()
         
@@ -139,19 +139,19 @@ wlan_config = {
 
 mqtt_config = {
     "server": "192.168.137.1", 
-    "client_id": "dummy_regal",
+    "client_id": "dummy_rack",
     "user": "regal",
     "psswd": "iot_hydro"
     }
 
 
 #TODO check i2c configuration pins
-i2c_0 = machine.I2C(0, scl=machine.Pin(4), sda=machine.Pin(5)) #2xLicht (0x39, 0x29)
-i2c_1 = machine.I2C(1, scl=machine.Pin(6), sda=machine.Pin(7)) #2xLicht (0x39, 0x29)
+i2c_0 = "" # machine.I2C(0, scl=machine.Pin(4), sda=machine.Pin(5)) #2xLicht (0x39, 0x29)
+i2c_1 = "" # machine.I2C(1, scl=machine.Pin(6), sda=machine.Pin(7)) #2xLicht (0x39, 0x29)
 
 #TODO check one wire configuration and pins
-one_wire_box = OneWire(machine.Pin(1))
-one_wire_pipe = OneWire(machine.Pin(2))
+one_wire_box = ""# OneWire(machine.Pin(1))
+one_wire_pipe =  ""# OneWire(machine.Pin(2))
 
 addresses_pipes = {"Back" : bytearray(b'(\xffd\x1f[\xcd\xa3.'), #Red
                 "Middle" : bytearray(b'(\xffd\x1f[\xa0\x1aS'), #Orange
@@ -207,6 +207,9 @@ actor_list = {
     b'Rack/VentilationControl': Fan("<insert pin here>"),
     b'Rack/IlluminationControl': Illumination("<insert pin here>")
 }
-
-regal = Regal(wlan_config=wlan_config, mqtt_config=mqtt_config, sensor_list=sensor_list, actor_list=actor_list)
-regal.run()
+try:
+    regal = Regal(wlan_config=wlan_config, mqtt_config=mqtt_config, sensor_list=sensor_list, actor_list=actor_list)
+    regal.run()
+except Exception as e:
+    print(f"Reset due to {e}")
+    machine.reset()

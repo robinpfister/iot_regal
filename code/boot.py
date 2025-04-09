@@ -230,6 +230,9 @@ actor_list = {
     b'Rack/VentilationControl': Fan(20),
     b'Rack/IlluminationControl': Illumination(21)
 }
-
-regal = Regal(wlan_config=wlan_config, mqtt_config=mqtt_config, sensor_list=sensor_list, actor_list=actor_list)
-regal.run()
+try:
+    regal = Regal(wlan_config=wlan_config, mqtt_config=mqtt_config, sensor_list=sensor_list, actor_list=actor_list)
+    regal.run()
+except Exception as e:
+    print(f"Reset due to {e}")
+    machine.reset()
